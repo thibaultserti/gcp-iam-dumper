@@ -17,6 +17,7 @@ parser.add_argument("-p", "--project", type=str, help="project to retrieve IAM f
 parser.add_argument("-o", "--output", type=str, default="", help="output", required=False)
 parser.add_argument("--only-user", action="store_true", help="retrieve only users, not groups, not SA", required=False)
 parser.add_argument("--only-physical", action="store_true", help="retrieve only users and groups, not SA", required=False)
+parser.add_argument("-s", "--short", action="store_true", help="use short", required=False)
 args = parser.parse_args()
 
 if args.output == "":
@@ -32,18 +33,28 @@ MEMBERS = {}
 list_iam = retrieve_iam_json(args.project)
 
 for dico in list_iam:
-    role = dico["role"]
+    if args.short:
+        role = dico["role"].split("/")[1]
+    else:
+        role = dico["role"]
+
     members = dico["members"]
     # Create or fill roles object
     if role not in ROLES:
         ROLES[role] = Role(name=role)
     for member in members:
-        ROLES[role].add_member(member)
-
+        if args.short:
+            ROLES[role].add_member(member.split(":")[1])
+        else:
+            ROLES[role].add_member(member)
+            
     # Create or fill roles member
     for member in members:
         if member not in MEMBERS:
-            MEMBERS[member] = Member(name=member)
+            if args.short:
+                MEMBERS[member] = Member(name=member.split(":")[1])
+            else:
+                MEMBERS[member] = Member(name=member)
         MEMBERS[member].add_role(role)
 
 # only keep required
