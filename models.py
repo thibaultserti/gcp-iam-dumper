@@ -1,5 +1,5 @@
 class Member:
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         self.roles = set()
         self.name = name
 
@@ -23,7 +23,7 @@ class Member:
         
 
 class Role:
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         self.members = set()
         self.name = name
     
