@@ -13,7 +13,7 @@ class Member:
         return self.name.startswith("serviceAccount:")
     
     def is_group(self) -> bool:
-        return self.name.stratswith("group:")
+        return self.name.startswith("group:")
     
     def is_physical(self) -> bool:
         return self.is_group() or self.is_user()
